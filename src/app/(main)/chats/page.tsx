@@ -31,7 +31,7 @@ const Chats = () => {
   const [selectedChatId, setSelectedChatId] = useState<string | null>(null);
   const [isCreateButtonActive, setIsCreateButtonActive] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  
+
   const router = useRouter();
   const containerRef = useRef<HTMLDivElement | null>(null);
   const popupRef = useRef<HTMLDivElement>(null);
@@ -122,13 +122,13 @@ const Chats = () => {
   const handleCreateGroup = () => {
     setIsModalOpen(false);
     setIsCreateButtonActive(false);
-    router.push('/chats/new-group');
+    router.push("/chats/new-group");
   };
 
   const handleCreateChannel = () => {
     setIsModalOpen(false);
     setIsCreateButtonActive(false);
-    router.push('/chats/new-channel');
+    router.push("/chats/new-channel");
   };
 
   const handleCloseModal = () => {
@@ -153,7 +153,11 @@ const Chats = () => {
                 className="placeholder:text-base placeholder:height-1.3 placeholder:font-normal border border-(--color-gray-1) 
                 pr-3 pl-11 pt-2.5 pb-2.5 md:pr-3 md:pl-11 md:pt-2.5 md:pb-2.5 h-[44px] w-full"
               />
-              <Image src={search} alt="Поиск" className="absolute left-7 top-1/2 -translate-y-1/2 w-[16px] md:w-[24px]" />
+              <Image
+                src={search}
+                alt="Поиск"
+                className="absolute left-7 top-1/2 -translate-y-1/2 w-[16px] md:w-[24px]"
+              />
             </div>
 
             <button
@@ -189,13 +193,7 @@ const Chats = () => {
                     className="w-full h-1/2 md:h-[44px] bg-transparent hover:bg-gray-50 active:bg-gray-100 flex items-center justify-between px-4 transition-colors"
                   >
                     <span className="text-base font-normal text-gray-900">Создать группу</span>
-                    <Image
-                      src={group}
-                      alt="Группа"
-                      width={24}
-                      height={24}
-                      className="w-6 h-6"
-                    />
+                    <Image src={group} alt="Группа" width={24} height={24} className="w-6 h-6" />
                   </button>
 
                   <div className="w-full h-px bg-(--color-gray-1)" />
@@ -205,13 +203,7 @@ const Chats = () => {
                     className="w-full h-1/2 md:h-[44px] bg-transparent hover:bg-gray-50 active:bg-gray-100 flex items-center justify-between px-4 transition-colors"
                   >
                     <span className="text-base font-normal text-gray-900">Создать канал</span>
-                    <Image
-                      src={channel}
-                      alt="Канал"
-                      width={24}
-                      height={24}
-                      className="w-6 h-6"
-                    />
+                    <Image src={channel} alt="Канал" width={24} height={24} className="w-6 h-6" />
                   </button>
                 </div>
               </ModalDropdown>
