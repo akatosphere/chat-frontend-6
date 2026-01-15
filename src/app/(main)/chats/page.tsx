@@ -29,12 +29,12 @@ const Chats = () => {
     placement: "bottom" as "top" | "bottom",
   });
   const [selectedChatId, setSelectedChatId] = useState<string | null>(null);
-  const [isCreateButtonActive, setIsCreateButtonActive] = useState(false);
-  const [isModalOpen, setIsModalOpen] = useState(false);
-
-  const router = useRouter();
   const containerRef = useRef<HTMLDivElement | null>(null);
   const popupRef = useRef<HTMLDivElement>(null);
+
+  const [isCreateButtonActive, setIsCreateButtonActive] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const router = useRouter();
 
   useEffect(() => {
     const container = containerRef.current;
@@ -141,7 +141,7 @@ const Chats = () => {
   );
 
   return (
-    <div className="flex flex-row  gap-x-6 w-full  justify-center md:mb-1">
+    <div className="flex flex-row gap-x-6 w-full justify-center md:mb-1">
       <div className="w-full md:max-w-[360px] md:min-w-[360px] min-h-[calc(100vh-88px)] bg-(--color-gray-light) md:rounded-lg border border-(--color-gray-1)">
         <div className="relative w-full p-4">
           <div className="flex gap-x-2 w-full relative">
