@@ -5,7 +5,7 @@ import type { IUser } from "../types/user";
 export const userApi = privateApi.injectEndpoints({
   endpoints: builder => ({
     getProfile: builder.query<IUser, void>({
-      query: () => "/user",
+      query: () => "/user-profile",
       providesTags: ["User"],
     }),
     updateProfile: builder.mutation<IUser, Partial<IUser>>({
