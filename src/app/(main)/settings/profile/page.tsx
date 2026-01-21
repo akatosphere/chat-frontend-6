@@ -3,7 +3,7 @@ import delete_outline from "@/assets/icons/delete_outline.svg";
 import BackToSettings from "@/components/user-profile/profile/BackToSettings";
 import SettingsProfilePhoto from "@/components/user-profile/profile/SettingsProfilePhoto";
 
-const Profile = () => {
+const Page = () => {
   return (
     <div className="flex gap-x-6 w-full  justify-center">
       <div className="w-full flex flex-col  md:max-w-[360px] min-h-[calc(100vh-84px)] mx-auto bg-(--color-gray-light) md:rounded-t-lg border border-(--color-gray-1) p-0-4-4-4">
@@ -23,4 +23,4 @@ const Profile = () => {
     </div>
   );
 };
-export default Profile;
+export default Page;
