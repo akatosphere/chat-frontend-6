@@ -17,6 +17,7 @@ import { useRouter } from "next/navigation";
 import ChatInfoContent from "@/src/components/ui/chats/ChatInfoContent";
 import ChatInfoHeader from "@/src/components/ui/chats/ChatInfoHeader";
 import { useIsMobile } from "@/src/hooks/useIsMobile";
+import { useGetChatsQuery } from "@/src/services/chatsApi";
 
 const Page = () => {
   const POPUP_HEIGHT = 238;
@@ -42,6 +43,9 @@ const Page = () => {
   const router = useRouter();
 
   const isMobile = useIsMobile();
+
+  const { data, isLoading, error } = useGetChatsQuery();
+  console.log(data, error);
 
   useEffect(() => {
     const container = containerRef.current;

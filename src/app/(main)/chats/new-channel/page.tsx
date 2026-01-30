@@ -1,7 +1,7 @@
 "use client";
 
-import BaseCreationPage from "../../../../components/ui/chats/BaseCreationPage";
-import ChannelTypeSelector from "../../../../components/ui/chats/ChannelTypeSelector";
+import BaseCreationPage from "@/src/components/ui/chats/BaseCreationPage";
+import ChannelTypeSelector from "@/src/components/ui/chats/ChannelTypeSelector";
 import { useState } from "react";
 
 const NewChannelPage = () => {
