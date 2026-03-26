@@ -1,4 +1,4 @@
-import { enqueueMessage, flushQueue } from "./messageQueueService";
+import { enqueueMessage, flushQueue } from "@/src/services/messageQueueService";
 
 let socket: WebSocket | null = null;
 
@@ -40,28 +40,44 @@ const getFreshToken = async (): Promise<string | null> => {
 
 // Отправка данных через сокет с очередью
 export const sendThroughSocket = async (data: unknown) => {
-  console.log("sendThroughSocket called", data);
   enqueueMessage(data);
 
+  await connectSocket({ force: true });
+
+  // пробуем отправить сразу
   if (socket?.readyState === WebSocket.OPEN) {
     flushQueue(socket);
-    return;
   }
+};
 
-  // если есть таймер реконнекта — отменяем
-  if (reconnectTimeout) {
-    clearTimeout(reconnectTimeout);
-    reconnectTimeout = null;
-  }
+// Настройка слушателей онлайн/офлайн для автоматического реконнекта
+let isOnlineListenerAttached = false;
 
-  await connectSocket();
+const setupNetworkListeners = () => {
+  if (isOnlineListenerAttached) return;
+
+  isOnlineListenerAttached = true;
+
+  window.addEventListener("online", () => {
+    console.log("Internet restored → reconnecting WS");
+    connectSocket();
+  });
+
+  window.addEventListener("offline", () => {
+    console.log("Internet lost");
+  });
 };
 
 // Подключение сокета
-export const connectSocket = async (): Promise<WebSocket | null> => {
-  if (socket?.readyState === WebSocket.OPEN) return socket;
-  if (socket?.readyState === WebSocket.CONNECTING) return socket;
-  if (isConnecting) return socket;
+export const connectSocket = async ({ force = false } = {}): Promise<WebSocket | null> => {
+  setupNetworkListeners();
+  if (!force && socket?.readyState === WebSocket.OPEN) return socket;
+  if (!force && isConnecting) return socket;
+
+  if (socket && force && socket.readyState !== WebSocket.OPEN) {
+    socket.close();
+    socket = null;
+  }
 
   isConnecting = true;
   manualClose = false;
@@ -72,42 +88,24 @@ export const connectSocket = async (): Promise<WebSocket | null> => {
     return null;
   }
 
-  socket = new WebSocket(`wss://api.dev.chat.ktsf.ru/ws/chat?authorization=${token}`);
-
-  socket.onopen = () => {
-    console.log("WS connected");
-
-    isConnecting = false;
-    reconnectAttempts = 0;
-
-    flushQueue(socket!);
-
-    if (reconnectTimeout) {
-      clearTimeout(reconnectTimeout);
-      reconnectTimeout = null;
-    }
-  };
-
-  socket.onmessage = event => {
-    listeners.forEach(listener => listener(event));
-  };
-
-  socket.onclose = () => {
-    console.log("WS disconnected");
-
-    isConnecting = false;
-    socket = null;
-
-    if (!manualClose) {
-      scheduleReconnect();
-    }
-  };
-
-  socket.onerror = () => {
-    socket?.close();
-  };
-
-  return socket;
+  return new Promise(resolve => {
+    const ws = new WebSocket(`wss://api.dev.chat.ktsf.ru/ws/chat?authorization=${token}`);
+    ws.onopen = () => {
+      console.log("WS connected (force)");
+      isConnecting = false;
+      reconnectAttempts = 0;
+      socket = ws;
+      flushQueue(ws);
+      resolve(ws);
+    };
+    ws.onclose = () => {
+      isConnecting = false;
+      socket = null;
+      if (!manualClose) scheduleReconnect();
+    };
+    ws.onerror = () => ws.close();
+    ws.onmessage = event => listeners.forEach(l => l(event));
+  });
 };
 
 // Планирование реконнекта
@@ -127,12 +125,7 @@ const scheduleReconnect = () => {
 
   reconnectTimeout = setTimeout(async () => {
     reconnectTimeout = null;
-
-    const ws = await connectSocket();
-
-    if (ws?.readyState === WebSocket.OPEN) {
-      flushQueue(ws);
-    }
+    await connectSocket();
   }, delay);
 };
 

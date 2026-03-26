@@ -3,8 +3,7 @@ import { timeFormat } from "@/src/utils/timeFormat";
 import type { IMessage } from "@/src/types/message";
 import messageSent from "@/src/assets/icons/message-sent.svg";
 import messageRead from "@/src/assets/icons/message-read.svg";
-import MessageWithLinks from "./MessageWithLinks";
-// import messageNotSent from "@/src/assets/icons/message-not-sent.svg";
+import messageNotSent from "@/src/assets/icons/message-not-sent.svg";
 
 export default function OutgoingMessage({
   message,
@@ -24,7 +23,9 @@ export default function OutgoingMessage({
         </span>
 
         <span>
-          {message.new ? (
+          {message.pending ? (
+            <Image src={messageNotSent} alt="Не отправлено" width={18} height={18} />
+          ) : message.new ? (
             <Image src={messageSent} alt="Отправлено" width={18} height={18} />
           ) : (
             <Image src={messageRead} alt="Прочитано" width={18} height={18} />

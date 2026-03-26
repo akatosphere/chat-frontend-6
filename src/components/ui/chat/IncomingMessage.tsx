@@ -1,7 +1,6 @@
 import { useEffect, useRef } from "react";
 import { timeFormat } from "@/src/utils/timeFormat";
 import type { IMessage } from "@/src/types/message";
-import MessageWithLinks from "./MessageWithLinks";
 
 export default function IncomingMessage({
   message,

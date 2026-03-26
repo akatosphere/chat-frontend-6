@@ -48,7 +48,6 @@ import {
 } from "@/src/services/contactApi";
 import { useGetChatsQuery } from "@/src/services/chatsApi";
 import type { AppDispatch } from "@/src/store/store";
-import { chatsApi } from "@/src/services/chatsApi";
 import { useGetContactsQuery, useAddContactByPhoneMutation } from "@/src/services/contactApi";
 import { useGetProfileQuery } from "@/src/services/userApi";
 import { getMessagesApi, useGetMessagesQuery } from "@/src/services/messagesApi";
@@ -211,21 +210,6 @@ export default function Chat() {
           new_read_status: false,
           chat_key: message.chat_key,
         },
-      }),
-    );
-
-    dispatch(
-      chatsApi.util.updateQueryData("getChats", undefined, draft => {
-        const chatItem = draft.results.find(
-          c => c.chat?.uid === message.from_user.uid || c.chat?.uid === message.to_user.uid,
-        );
-        if (!chatItem) return;
-
-        // Только если это входящее сообщение и оно было непрочитано
-        if (message.from_user.uid !== profile?.uid && message.new) {
-          chatItem.new_message_count =
-            chatItem.new_message_count > 0 ? chatItem.new_message_count - 1 : 0;
-        }
       }),
     );
   };

@@ -4,7 +4,6 @@ import { usePathname, useSelectedLayoutSegment } from "next/navigation";
 import Chats from "@/src/components/ui/chats/Chats";
 import NewGroupPage from "./new-group/page";
 import NewChannelPage from "./new-channel/page";
-import AddSubscribersPage from "./add-subscribers/page";
 
 export default function ContactsLayout({ chat }: { chat: React.ReactNode }) {
   const segment = useSelectedLayoutSegment("chat");

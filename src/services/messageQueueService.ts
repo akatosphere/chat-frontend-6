@@ -2,9 +2,7 @@ type QueueMessage = unknown;
 
 const STORAGE_KEY = "ws_message_queue";
 
-const queue: QueueMessage[] = loadQueue();
-
-function loadQueue(): QueueMessage[] {
+function getQueue(): QueueMessage[] {
   try {
     const raw = localStorage.getItem(STORAGE_KEY);
     return raw ? JSON.parse(raw) : [];
@@ -13,24 +11,32 @@ function loadQueue(): QueueMessage[] {
   }
 }
 
-function saveQueue() {
+function setQueue(queue: QueueMessage[]) {
   localStorage.setItem(STORAGE_KEY, JSON.stringify(queue));
 }
 
 export const enqueueMessage = (message: QueueMessage) => {
+  const queue = getQueue();
   queue.push(message);
-  saveQueue();
+  setQueue(queue);
 };
 
 export const flushQueue = (socket: WebSocket) => {
   if (socket.readyState !== WebSocket.OPEN) return;
 
-  while (queue.length > 0) {
-    const msg = queue.shift();
-    if (msg) socket.send(JSON.stringify(msg));
+  const queue = getQueue();
+
+  const newQueue: QueueMessage[] = [];
+
+  for (const msg of queue) {
+    try {
+      socket.send(JSON.stringify(msg));
+    } catch {
+      newQueue.push(msg);
+    }
   }
 
-  saveQueue();
+  setQueue(newQueue);
 };
 
-export const getQueueSize = () => queue.length;
+export const getQueueSize = () => getQueue().length;
